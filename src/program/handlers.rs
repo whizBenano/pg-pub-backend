@@ -23,10 +23,17 @@ async fn create_user(data: Data<DbPool>, form: Json<CreateUser>) -> impl Respond
         verified: false
     };
 
-    match diesel::insert_into(people).values(new_user).execute(&mut conn(data)) {
-        Ok(_) => HttpResponse::Ok().body("Registration successful"),
-        Err(ex) => HttpResponse::InternalServerError().body(format!("{}", ex))
-    }
+    // match diesel::insert_into(people).values(new_user).execute(&mut conn(data)) {
+    //     Ok(_) => HttpResponse::Ok().body("Registration successful"),
+    //     Err(ex) => HttpResponse::InternalServerError().body(format!("{}", ex))
+    // }
+
+    diesel::insert_into(people).values(new_user)
+        .execute(&mut conn(data))
+        .map_or_else(
+            |_| HttpResponse::InternalServerError().body("Registration failed"),
+            |_| HttpResponse::Ok().body("Registration successful")
+        )
 }
 
 #[post("/login")]
