@@ -1,4 +1,5 @@
-pub mod model;
-pub mod handlers;
+pub mod user_model;
 pub mod endpoints;
+pub mod model;
 mod services;
+mod handlers;
