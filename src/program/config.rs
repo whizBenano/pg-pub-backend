@@ -1,31 +1,9 @@
 use actix_cors::Cors;
 use actix_web::http::header;
-use serde::{Deserialize, Serialize};
-use uuid::Uuid;
-use diesel::{prelude::*, r2d2::{ConnectionManager, Pool}};
-use chrono::{Utc, DateTime};
+use diesel::{PgConnection, r2d2::{ConnectionManager, Pool}};
+use serde::{Serialize, Deserialize};
 
 pub type DbPool = Pool<ConnectionManager<PgConnection>>;
-
-#[derive(Serialize, Deserialize)]
-pub struct _NewBook {
-    pub author_id: Uuid,
-    pub book_title: String,
-    pub content: String,
-    pub price: f32,
-    pub img_url: String,
-}
-
-#[derive(Queryable, Insertable)]
-#[diesel(table_name = crate::schema::books)]
-pub struct Book {
-    pub author_id: Uuid,
-    pub book_title: String,
-    pub content: String,
-    pub price: f64,
-    pub img_url: String,
-    pub created_at: DateTime<Utc>,
-}
 
 #[derive(Serialize, Deserialize)]
 pub struct Claims {

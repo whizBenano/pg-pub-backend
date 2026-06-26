@@ -1,4 +1,3 @@
-mod schema;
 mod program;
 use actix_web::{App, HttpServer, middleware::{Logger, NormalizePath}, web};
 
@@ -12,7 +11,7 @@ async fn main() -> std::io::Result<()> {
     env_logger::init();
 
     let config = load_rustls_config();
-    let data = web::Data::new(program::model::init_pool().await);
+    let data = web::Data::new(program::config::init_pool().await);
     let (host, port) = (
         std::env::var("HOST").map_err(|_| "Host not found").unwrap(),
         std::env::var("PORT").map_err(|_| "Port not available").unwrap()
@@ -22,7 +21,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .app_data(data.clone())
             .configure(program::endpoints::app_config)
-            .wrap(program::model::cors())
+            .wrap(program::config::cors())
             .wrap(NormalizePath::trim())
             .wrap(Logger::default())
     })

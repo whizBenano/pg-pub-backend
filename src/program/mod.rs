@@ -1,5 +1,9 @@
-pub mod user_model;
+// Real modules
+pub mod book;
+pub mod post;
+pub mod user;
+
+// File modules
 pub mod endpoints;
-pub mod model;
-mod services;
-mod handlers;
+pub mod config;
+pub mod schema;

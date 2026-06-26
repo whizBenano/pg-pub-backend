@@ -1,9 +1,13 @@
-use actix_web::{cookie::{Cookie, SameSite, time::Duration}, web::Data};
+use actix_web::{cookie::{Cookie, SameSite, time::Duration}, Result, web::Data};
+// use actix_multipart::Multipart;
 use argon2::{Argon2, PasswordHasher, password_hash::{SaltString, rand_core::OsRng}};
 use diesel::{PgConnection, r2d2::{ConnectionManager, PooledConnection}};
 use jsonwebtoken::{DecodingKey, EncodingKey, Header, Validation, decode, encode};
-use super::model::{Claims, DbPool};
 use uuid::{Uuid, Error};
+// use futures_util::StreamExt;
+// use tokio::{fs::File, io::AsyncWriteExt};
+use crate::program::config::{Claims, DbPool};
+
 
 pub fn conn(db: Data<DbPool>) -> PooledConnection<ConnectionManager<PgConnection>> {
     db.get().map_err(|_| "Unable to get a DB connection").unwrap()
@@ -20,6 +24,21 @@ pub fn hash_pass(password_in: Option<String>) -> Option<String> {
         None => None
     }
 }
+
+// pub async fn _upload(mut payload: Multipart) -> Result<HttpResponse> {
+//     while let Some(field) = payload.next().await {
+//         let mut field = field?;
+
+//         let mut file = File::create("upload.bin").await?;
+
+//         while let Some(chunk) = field.next().await {
+//             let data = chunk?;
+//             file.write_all(&data).await?;
+//         }
+//     }
+
+//     Ok(HttpResponse::Ok().finish())
+// }
 
 pub fn create_cookie(user_id: Uuid) -> Cookie<'static> {
     let secret = std::env::var("JWT_SECRET").map_err(|_| "Unable to read JWT secret").unwrap();
